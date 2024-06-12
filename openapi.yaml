@@ -199,16 +199,13 @@ components:
           example: 1
         jwtToken:
           type: string
-          format: uuid
+          example: xxxxx.yyyyy.zzzzz
     userOutput:
       type: object
       properties:
         id:
           type: integer
           example: 1
-        jwtToken:
-          type: string
-          format: uuid
         name:
           type: string
           example: Test User
@@ -217,8 +214,9 @@ components:
         email:
           type: string
           example: testuser@mail.com
-        password:
+        jwtToken:
           type: string
+          example: xxxxx.yyyyy.zzzzz
     userCredentials:
       required:
       - email
