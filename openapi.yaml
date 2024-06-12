@@ -1,0 +1,232 @@
+# Swagger API Contract
+---
+openapi: 3.0.0
+info:
+  title: GigaWrks User Service
+  description: This document contains the contract of the User service with all the REST APIs needed for the users with support to fetch available countries.
+  contact:
+    email: nehul.rangappa@gmail.com
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/NEHULRANGAPPA_1/gigawrks-user-service/1.0.0
+  description: SwaggerHub API Auto Mocking
+tags:
+- name: Users
+  description: APIs supported for all the users
+paths:
+  /user-signup:
+    post:
+      tags:
+      - Users
+      summary: Sign up as a user
+      description: Creates an account for a new user with their primary information
+      operationId: signUp
+      requestBody:
+        description: User information needed for account creation
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/userInput'
+      responses:
+        "201":
+          description: Successfully signed up as a user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userCreationOutput'
+        "400":
+          description: "Bad Request: Please check for missing or invalid data"
+        "500":
+          description: "Internal Server Error: Please try again"
+  /user-login:
+    post:
+      tags:
+      - Users
+      summary: Login in as a user
+      description: Validates the user credentials and authenticates the user.
+      operationId: login
+      requestBody:
+        description: User information needed for account creation
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/userCredentials'
+      responses:
+        "201":
+          description: Successfully logged in as a user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userOutput'
+        "400":
+          description: "Bad Request: Please check for missing or invalid data"
+        "401":
+          description: Please check your credentials
+        "500":
+          description: "Internal Server Error: Please try again"
+  /users/{id}:
+    get:
+      tags:
+      - Users
+      summary: Fetch user profile
+      description: Fetch the user information based on the identifier and JWT token headers
+      operationId: getUserByID
+      parameters:
+      - name: id
+        in: path
+        description: Identifier for finding the appropriate user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      - name: Authorization
+        in: header
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: Bearer xxxxx.yyyyy.zzzzz
+      responses:
+        "200":
+          description: User fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userOutput'
+        "400":
+          description: "Bad Request: Please check the id of user"
+        "401":
+          description: Please check your authorization headers as the token is invalid or expired
+        "500":
+          description: "Internal Server Error: Please try again"
+    put:
+      tags:
+      - Users
+      summary: Update user profile
+      description: Update the user information based on the identifier and JWT token headers
+      operationId: updateUser
+      parameters:
+      - name: id
+        in: path
+        description: Identifier for finding the appropriate user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      - name: Authorization
+        in: header
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: Bearer xxxxx.yyyyy.zzzzz
+      requestBody:
+        description: User information needed to be updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/userInput'
+      responses:
+        "200":
+          description: User information updated successfully
+        "400":
+          description: "Bad Request: Please check for any missing or invalid data"
+        "401":
+          description: Please check your authorization headers as the token is invalid or expired
+        "500":
+          description: "Internal Server Error: Please try again"
+    delete:
+      tags:
+      - Users
+      summary: Delete user account
+      description: Delete the user information and the account completely based on the identifier and JWT token headers
+      operationId: deleteUser
+      parameters:
+      - name: id
+        in: path
+        description: Identifier for finding the appropriate user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      - name: Authorization
+        in: header
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: Bearer xxxxx.yyyyy.zzzzz
+      responses:
+        "204":
+          description: No content
+        "400":
+          description: "Bad Request: Please check for any missing or invalid data"
+        "401":
+          description: Please check your authorization headers as the token is invalid or expired
+        "500":
+          description: "Internal Server Error: Please try again"
+components:
+  schemas:
+    userInput:
+      required:
+      - country
+      - email
+      - name
+      - password
+      type: object
+      properties:
+        name:
+          type: string
+          example: Test User
+        country:
+          type: string
+        email:
+          type: string
+          example: testuser@mail.com
+        password:
+          type: string
+    userCreationOutput:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        jwtToken:
+          type: string
+          format: uuid
+    userOutput:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        jwtToken:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Test User
+        country:
+          type: string
+        email:
+          type: string
+          example: testuser@mail.com
+        password:
+          type: string
+    userCredentials:
+      required:
+      - email
+      - password
+      type: object
+      properties:
+        email:
+          type: string
+          example: testuser@mail.com
+        password:
+          type: string
