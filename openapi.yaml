@@ -14,7 +14,7 @@ tags:
 - name: Users
   description: APIs supported for all the users
 paths:
-  /user-signup:
+  /signup:
     post:
       tags:
       - Users
@@ -38,7 +38,7 @@ paths:
           description: "Bad Request: Please check for missing or invalid data"
         "500":
           description: "Internal Server Error: Please try again"
-  /user-login:
+  /login:
     post:
       tags:
       - Users
