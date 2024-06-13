@@ -30,26 +30,53 @@ func NewUserStore(db *gorm.DB) Users {
 // GetByID method takes a userID, fetches the user information
 // from the database and returns User object along with an error if any
 func (u *userStore) GetByID(userID int) (*User, error) {
-	return nil, nil
+	var user User
+	if err := u.DB.First(&user, userID); err.Error != nil {
+		return nil, err.Error
+	}
+
+	return &user, nil
 }
 
 // GetByEmail method takes an email, fetches the user information
 // from the database and returns User object along with an error if any
 func (u *userStore) GetByEmail(email string) (*User, error) {
-	return nil, nil
+	var user User
+	if err := u.DB.Where("email = ?", email).First(&user); err.Error != nil {
+		return nil, err.Error
+	}
+
+	return &user, nil
 }
 
 // Create method takes a User object
 // creates the user information in the database
 // and returns the user ID along with an error if any
 func (u *userStore) Create(user *User) (int, error) {
-	return 0, nil
+	user.CreatedAt = time.Now()
+	result := u.DB.Create(user)
+
+	if result.Error != nil {
+		return 0, result.Error
+	}
+
+	return user.ID, nil
 }
 
 // Update method takes a User object
 // updates the existing user information in the database
 // and returns an error if any encountered
 func (u *userStore) Update(user *User) error {
+	existingUser, err := u.GetByID(user.ID)
+	if err != nil {
+		return err
+	}
+
+	user.CreatedAt = existingUser.CreatedAt
+	if result := u.DB.Save(user); result.Error != nil {
+		return result.Error
+	}
+
 	return nil
 }
 
@@ -57,5 +84,9 @@ func (u *userStore) Update(user *User) error {
 // deletes the user information and
 // return an error if encountered
 func (u *userStore) Delete(userID int) error {
+	if result := u.DB.Delete(&User{}, userID); result.Error != nil {
+		return result.Error
+	}
+
 	return nil
 }
