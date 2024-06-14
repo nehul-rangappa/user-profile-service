@@ -31,16 +31,25 @@ func main() {
 	}
 
 	userStore := models.NewUserStore(db)
+	countryStore := models.NewCountryStore(db)
 
 	userController := controllers.NewUserController(userStore)
+	countryController := controllers.NewCountryController(countryStore)
 
 	app := gin.New()
 
+	// User APIs
 	app.POST("/signup", userController.Signup)
 	app.POST("/login", userController.Login)
 	app.GET("/users/:id", userController.Get)
 	app.PUT("/users/:id", userController.Update)
 	app.DELETE("/users/:id", userController.Delete)
+
+	// Rest Country API
+	app.GET("/rest-countries", countryController.GetMetaCountries)
+
+	// Country API
+	app.GET("/countries", countryController.GetCountries)
 
 	app.Run("localhost:8000")
 }
