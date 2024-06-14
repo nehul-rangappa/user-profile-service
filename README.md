@@ -56,7 +56,6 @@ Postman collection is available in the branch `postman-test-collection`
 Currently, view component is not used in this service based on our use case. It can be added if needed for your use case
 
 ## Future Enhancements
-* Middleware can be added for handling user authentication using JWT tokens for protected APIs
 * API Key can be used for making the `/rest-countries` API secure and protected such that it can only be used by administrator.
 * 3 Layered architecture or design pattern can be considered, as it is a better practice in Golang with Test Driven Development(TDD) with separation of concerns. It includes a handler layer, service layer and repository layer.
 * More unit tests can be with increased coverage of entire code.
