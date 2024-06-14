@@ -13,17 +13,20 @@ import (
 )
 
 func main() {
+	// Load environment variables from config file
 	err := godotenv.Load()
 	if err != nil {
 		panic("Failed to load env file")
 	}
 
+	// Read environment variables
 	dbUser := os.Getenv("DB_USER")
 	dbPass := os.Getenv("DB_PASSWORD")
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
 	dbName := os.Getenv("DB_NAME")
 
+	// Open connection to MySQL with GORM
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=true&loc=Local", dbUser, dbPass, dbHost, dbPort, dbName)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -36,6 +39,7 @@ func main() {
 	userController := controllers.NewUserController(userStore)
 	countryController := controllers.NewCountryController(countryStore)
 
+	// Initiate the app using GIN framework with default configuration
 	app := gin.Default()
 
 	// User APIs
@@ -48,8 +52,9 @@ func main() {
 	// Rest Country API
 	app.GET("/rest-countries", countryController.GetMetaCountries)
 
-	// Country API
+	// Country API with filter support using query parameters id, code or name
 	app.GET("/countries", countryController.GetCountries)
 
+	// Start the server on port 8000
 	app.Run("localhost:8000")
 }
