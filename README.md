@@ -58,10 +58,11 @@ Currently, view component is not used in this service based on our use case. It 
 ## Future Enhancements
 * API Key can be used for making the `/rest-countries` API secure and protected such that it can only be used by administrator.
 * 3 Layered architecture or design pattern can be considered, as it is a better practice in Golang with Test Driven Development(TDD) with separation of concerns. It includes a handler layer, service layer and repository layer.
+* Support API with different type of filters and optimize database queries if needed.
 * More unit tests can be with increased coverage of entire code.
 * Few functions handling JWT Tokens and password hash can be maintained in a separate directory `utils` which makes it cleaner.
 * More custom defined errors with much better flexibility and messages can be used
-
+* Performance testing of APIs and further optimization if necessary.
 
 
 ## Acknowledgements
