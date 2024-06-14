@@ -33,6 +33,10 @@ func main() {
 		panic("Failed to establish a connection with database")
 	}
 
+	// Migrations can be used if needed but applying DDL is suggested for control on data types in schema
+	// db.AutoMigrate(&models.Country{})
+	// db.AutoMigrate(&models.User{})
+
 	userStore := models.NewUserStore(db)
 	countryStore := models.NewCountryStore(db)
 
