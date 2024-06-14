@@ -73,11 +73,8 @@ func (c *countryController) GetMetaCountries(ctx *gin.Context) {
 		}
 	}
 
-	err = c.countryStore.Create(countries)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+	// Go routine to handle creating country records in our database
+	go c.countryStore.Create(countries)
 
 	ctx.JSON(http.StatusOK, metaCountries)
 	return
