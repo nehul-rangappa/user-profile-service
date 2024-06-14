@@ -30,9 +30,9 @@ func Test_userController_Signup(t *testing.T) {
 			name:    "Failure case due to missing name",
 			expMock: func() {},
 			reqBody: models.User{
-				Country:  "United States",
-				Email:    "test@gmail.com",
-				Password: "xasf2415g46",
+				CountryID: 1,
+				Email:     "test@gmail.com",
+				Password:  "xasf2415g46",
 			},
 			wantCode: http.StatusBadRequest,
 		},
@@ -50,10 +50,10 @@ func Test_userController_Signup(t *testing.T) {
 			name:    "Failure case due to invalid email",
 			expMock: func() {},
 			reqBody: models.User{
-				Name:     "Test User",
-				Country:  "United States",
-				Email:    "testuser",
-				Password: "xasf2415g46",
+				Name:      "Test User",
+				CountryID: 1,
+				Email:     "testuser",
+				Password:  "xasf2415g46",
 			},
 			wantCode: http.StatusBadRequest,
 		},
@@ -61,10 +61,10 @@ func Test_userController_Signup(t *testing.T) {
 			name:    "Failure case due to invalid password",
 			expMock: func() {},
 			reqBody: models.User{
-				Name:     "Test User",
-				Country:  "United States",
-				Email:    "test@gmail.com",
-				Password: "a",
+				Name:      "Test User",
+				CountryID: 1,
+				Email:     "test@gmail.com",
+				Password:  "a",
 			},
 			wantCode: http.StatusBadRequest,
 		},
@@ -80,6 +80,7 @@ func Test_userController_Signup(t *testing.T) {
 				Header: make(http.Header),
 				URL:    &url.URL{},
 			}
+			ctx.Request.Method = "POST"
 
 			jsonbytes, _ := json.Marshal(tt.reqBody)
 			ctx.Request.Body = io.NopCloser(bytes.NewBuffer(jsonbytes))
@@ -136,6 +137,7 @@ func Test_userController_Login(t *testing.T) {
 				Header: make(http.Header),
 				URL:    &url.URL{},
 			}
+			ctx.Request.Method = "POST"
 
 			jsonbytes, _ := json.Marshal(tt.reqBody)
 			ctx.Request.Body = io.NopCloser(bytes.NewBuffer(jsonbytes))
@@ -168,11 +170,11 @@ func Test_userController_Get(t *testing.T) {
 			pathParam: "1",
 			expMock: func() {
 				userModel.EXPECT().GetByID(1).Return(&models.User{
-					ID:       1,
-					Name:     "Test User",
-					Country:  "United States",
-					Email:    "test@gmail.com",
-					Password: "xasf2415g46",
+					ID:        1,
+					Name:      "Test User",
+					CountryID: 1,
+					Email:     "test@gmail.com",
+					Password:  "xasf2415g46",
 				}, nil)
 			},
 			wantCode: http.StatusOK,
@@ -205,6 +207,7 @@ func Test_userController_Get(t *testing.T) {
 				Header: make(http.Header),
 				URL:    &url.URL{},
 			}
+			ctx.Request.Method = "GET"
 
 			jwtToken, _ := createJWTToken(tt.userID)
 			ctx.Request.Header.Set("Authorization", "Bearer "+jwtToken)
@@ -241,7 +244,7 @@ func Test_userController_Update(t *testing.T) {
 		// 		userModel.EXPECT().Update(&models.User{
 		// 			ID:       1,
 		// 			Name:     "Test User",
-		// 			Country:  "United States",
+		// 			CountryID: 1,
 		// 			Email:    "test@gmail.com",
 		// 			Password: "xasf2415g46",
 		// 		}).Return(nil)
@@ -249,7 +252,7 @@ func Test_userController_Update(t *testing.T) {
 		// 	reqBody: models.User{
 		// 		ID:       1,
 		// 		Name:     "Test User",
-		// 		Country:  "United States",
+		// 		CountryID: 1,
 		// 		Email:    "test@gmail.com",
 		// 		Password: "xasf2415g46",
 		// 	},
@@ -261,11 +264,11 @@ func Test_userController_Update(t *testing.T) {
 			pathParam: "a",
 			expMock:   func() {},
 			reqBody: models.User{
-				ID:       1,
-				Name:     "Test User",
-				Country:  "United States",
-				Email:    "test@gmail.com",
-				Password: "xasf2415g46",
+				ID:        1,
+				Name:      "Test User",
+				CountryID: 1,
+				Email:     "test@gmail.com",
+				Password:  "xasf2415g46",
 			},
 			wantCode: http.StatusBadRequest,
 		},
@@ -275,11 +278,11 @@ func Test_userController_Update(t *testing.T) {
 			pathParam: "a",
 			expMock:   func() {},
 			reqBody: models.User{
-				ID:       1,
-				Name:     "Test User",
-				Country:  "United States",
-				Email:    "",
-				Password: "",
+				ID:        1,
+				Name:      "Test User",
+				CountryID: 1,
+				Email:     "",
+				Password:  "",
 			},
 			wantCode: http.StatusBadRequest,
 		},
@@ -291,7 +294,7 @@ func Test_userController_Update(t *testing.T) {
 		// 		userModel.EXPECT().Update(&models.User{
 		// 			ID:       1,
 		// 			Name:     "Test User",
-		// 			Country:  "United States",
+		// 			CountryID: 1,
 		// 			Email:    "test@gmail.com",
 		// 			Password: "xasf2415g46",
 		// 		}).Return(sql.ErrNoRows)
@@ -299,7 +302,7 @@ func Test_userController_Update(t *testing.T) {
 		// 	reqBody: models.User{
 		// 		ID:       1,
 		// 		Name:     "Test User",
-		// 		Country:  "United States",
+		// 		CountryID: 1,
 		// 		Email:    "test@gmail.com",
 		// 		Password: "xasf2415g46",
 		// 	},
@@ -317,6 +320,7 @@ func Test_userController_Update(t *testing.T) {
 				Header: make(http.Header),
 				URL:    &url.URL{},
 			}
+			ctx.Request.Method = "PUT"
 
 			jwtToken, _ := createJWTToken(tt.userID)
 
@@ -385,6 +389,7 @@ func Test_userController_Delete(t *testing.T) {
 				Header: make(http.Header),
 				URL:    &url.URL{},
 			}
+			ctx.Request.Method = "DELETE"
 
 			jwtToken, _ := createJWTToken(tt.userID)
 			ctx.Request.Header.Set("Authorization", "Bearer "+jwtToken)

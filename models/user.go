@@ -10,7 +10,7 @@ import (
 type User struct {
 	ID        int       `json:"id" gorm:"primary_key"`
 	Name      string    `json:"name"`
-	Country   string    `json:"country"`
+	CountryID int       `json:"countryID"`
 	Email     string    `json:"email"`
 	Password  string    `json:"password,omitempty"`
 	CreatedAt time.Time `json:"createdAt"`
@@ -54,6 +54,7 @@ func (u *userStore) GetByEmail(email string) (*User, error) {
 // and returns the user ID along with an error if any
 func (u *userStore) Create(user *User) (int, error) {
 	user.CreatedAt = time.Now()
+	user.UpdatedAt = time.Now()
 	result := u.DB.Create(user)
 
 	if result.Error != nil {
@@ -73,6 +74,7 @@ func (u *userStore) Update(user *User) error {
 	}
 
 	user.CreatedAt = existingUser.CreatedAt
+	user.UpdatedAt = time.Now()
 	if result := u.DB.Save(user); result.Error != nil {
 		return result.Error
 	}

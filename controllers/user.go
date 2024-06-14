@@ -32,7 +32,7 @@ func validate(user *models.User) error {
 		return errors.New("user name cannot be empty")
 	}
 
-	if user.Country == "" {
+	if user.CountryID <= 0 {
 		return errors.New("user's country cannot be empty")
 	}
 
