@@ -104,7 +104,6 @@ func (u *userController) Signup(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusCreated, gin.H{"id": id, "jwtToken": jwtToken})
-	return
 }
 
 // Login method takes a gin context, validates the request body
@@ -140,7 +139,6 @@ func (u *userController) Login(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"id": userData.ID, "jwtToken": jwtToken})
-	return
 }
 
 // Get method takes a gin context, validates the path parameter
@@ -162,7 +160,6 @@ func (u *userController) Get(ctx *gin.Context) {
 	userData.Password = ""
 
 	ctx.JSON(http.StatusOK, userData)
-	return
 }
 
 // Update method takes a gin context, validates the path parameter, request body
@@ -203,7 +200,6 @@ func (u *userController) Update(ctx *gin.Context) {
 	user.Password = ""
 
 	ctx.JSON(http.StatusOK, user)
-	return
 }
 
 // Delete method takes a gin context, validates the path parameter
@@ -219,5 +215,4 @@ func (u *userController) Delete(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusNoContent, nil)
-	return
 }

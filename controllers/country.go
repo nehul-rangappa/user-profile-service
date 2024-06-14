@@ -85,7 +85,6 @@ func (c *countryController) GetMetaCountries(ctx *gin.Context) {
 	go c.countryStore.Create(countries)
 
 	ctx.JSON(http.StatusOK, metaCountries)
-	return
 }
 
 // GetCountries method takes a gin context
@@ -160,5 +159,4 @@ func (c *countryController) GetCountries(ctx *gin.Context) {
 	countries = append(countries, *result)
 
 	ctx.JSON(http.StatusOK, countries)
-	return
 }
