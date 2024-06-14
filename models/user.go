@@ -8,11 +8,11 @@ import (
 
 // User resource consisting of all the attributes defining a user
 type User struct {
-	ID        int       `json:"id" gorm:"primary_key"`
-	Name      string    `json:"name"`
-	CountryID int       `json:"countryID"`
-	Email     string    `json:"email"`
-	Password  string    `json:"password,omitempty"`
+	ID        int       `json:"id" gorm:"primaryKey, not null, autoIncrement"`
+	Name      string    `json:"name" gorm:"not null"`
+	CountryID int       `json:"countryID" gorm:"unique, not null"`
+	Email     string    `json:"email" gorm:"not null"`
+	Password  string    `json:"password,omitempty" gorm:"not null"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
