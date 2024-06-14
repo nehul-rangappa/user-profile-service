@@ -138,7 +138,7 @@ func (c *countryController) GetCountries(ctx *gin.Context) {
 
 	cID, err := strconv.Atoi(id)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": errInvalidPathParam.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": ErrInvalidPathParam.Error()})
 		return
 	}
 
