@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -17,7 +18,7 @@ func main() {
 	// Load environment variables from config file
 	err := godotenv.Load()
 	if err != nil {
-		panic("Failed to load env file")
+		log.Fatal("Failed to load env file")
 	}
 
 	// Read environment variables
@@ -31,7 +32,7 @@ func main() {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=true&loc=Local", dbUser, dbPass, dbHost, dbPort, dbName)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		panic("Failed to establish a connection with database")
+		log.Fatal("Failed to establish a connection with database")
 	}
 
 	// Migrations can be used if needed but applying DDL is suggested for control on data types in schema
