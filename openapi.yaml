@@ -13,6 +13,10 @@ servers:
 tags:
 - name: Users
   description: APIs supported for all the users
+- name: Rest Countries
+  description: API supported for all the countries available from the external client
+- name: Countries
+  description: API supported for all the countries available
 paths:
   /signup:
     post:
@@ -80,14 +84,14 @@ paths:
         explode: false
         schema:
           type: integer
-      - name: Authorization
-        in: header
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-          example: Bearer xxxxx.yyyyy.zzzzz
+      # - name: Authorization
+      #   in: header
+      #   required: true
+      #   style: simple
+      #   explode: false
+      #   schema:
+      #     type: string
+      #     example: Bearer xxxxx.yyyyy.zzzzz
       responses:
         "200":
           description: User fetched successfully
@@ -101,6 +105,8 @@ paths:
           description: Please check your authorization headers as the token is invalid or expired
         "500":
           description: "Internal Server Error: Please try again"
+      security:
+      - bearerAuth: []
     put:
       tags:
       - Users
@@ -116,14 +122,14 @@ paths:
         explode: false
         schema:
           type: integer
-      - name: Authorization
-        in: header
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-          example: Bearer xxxxx.yyyyy.zzzzz
+      # - name: Authorization
+      #   in: header
+      #   required: true
+      #   style: simple
+      #   explode: false
+      #   schema:
+      #     type: string
+      #     example: Bearer xxxxx.yyyyy.zzzzz
       requestBody:
         description: User information needed to be updated
         content:
@@ -139,6 +145,8 @@ paths:
           description: Please check your authorization headers as the token is invalid or expired
         "500":
           description: "Internal Server Error: Please try again"
+      security:
+      - bearerAuth: []
     delete:
       tags:
       - Users
@@ -154,14 +162,14 @@ paths:
         explode: false
         schema:
           type: integer
-      - name: Authorization
-        in: header
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-          example: Bearer xxxxx.yyyyy.zzzzz
+      # - name: Authorization
+      #   in: header
+      #   required: true
+      #   style: simple
+      #   explode: false
+      #   schema:
+      #     type: string
+      #     example: Bearer xxxxx.yyyyy.zzzzz
       responses:
         "204":
           description: No content
@@ -169,6 +177,71 @@ paths:
           description: "Bad Request: Please check for any missing or invalid data"
         "401":
           description: Please check your authorization headers as the token is invalid or expired
+        "500":
+          description: "Internal Server Error: Please try again"
+      security:
+      - bearerAuth: []
+  /rest-countries:
+    get:
+      tags:
+      - Rest Countries
+      summary: Fetch all the countries from external source
+      description: Fetch all the available countries from the external client
+      operationId: getRestCountries
+      responses:
+        "200":
+          description: Countries fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restCountriesOutput'
+        "400":
+          description: Bad Request
+        "500":
+          description: "Internal Server Error: Please try again"
+  /countries:
+    get:
+      tags:
+      - Countries
+      summary: Fetch all the countries
+      description: Fetch all the available countries from the external client
+      operationId: getCountries
+      parameters:
+      - name: id
+        in: query
+        description: Identifier for finding the appropriate country
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: code
+        in: query
+        description: Country Code for finding the appropriate country
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: name
+        in: query
+        description: Country Name for finding the appropriate country
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Countries fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/countriesOutput'
+        "400":
+          description: Bad Request
+        "404":
+          description: No countries found
         "500":
           description: "Internal Server Error: Please try again"
 components:
@@ -228,3 +301,54 @@ components:
           example: testuser@mail.com
         password:
           type: string
+    countryName:
+      type: object
+      properties:
+        common:
+          type: string
+          example: United States
+        official:
+          type: string
+          example: United States of America
+    restCountriesOutput:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/countryName'
+        cca2:
+          type: string
+          example: US
+        capital:
+          type: array
+          items:
+            type: string
+        region:
+          type: string
+        subregion:
+          type: string
+    countriesOutput:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        commonName:
+          type: string
+          example: United States
+        officialName:
+          type: string
+          example: United States of America
+        countryCode:
+          type: string
+          example: US
+        capital:
+          type: string
+        region:
+          type: string
+        subregion:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
