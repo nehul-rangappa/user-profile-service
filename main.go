@@ -36,7 +36,7 @@ func main() {
 	userController := controllers.NewUserController(userStore)
 	countryController := controllers.NewCountryController(countryStore)
 
-	app := gin.New()
+	app := gin.Default()
 
 	// User APIs
 	app.POST("/signup", userController.Signup)
