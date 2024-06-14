@@ -105,3 +105,100 @@ func (mr *MockUsersMockRecorder) Update(user interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockUsers)(nil).Update), user)
 }
+
+// MockCountries is a mock of Countries interface.
+type MockCountries struct {
+	ctrl     *gomock.Controller
+	recorder *MockCountriesMockRecorder
+}
+
+// MockCountriesMockRecorder is the mock recorder for MockCountries.
+type MockCountriesMockRecorder struct {
+	mock *MockCountries
+}
+
+// NewMockCountries creates a new mock instance.
+func NewMockCountries(ctrl *gomock.Controller) *MockCountries {
+	mock := &MockCountries{ctrl: ctrl}
+	mock.recorder = &MockCountriesMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockCountries) EXPECT() *MockCountriesMockRecorder {
+	return m.recorder
+}
+
+// Create mocks base method.
+func (m *MockCountries) Create(countries []Country) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", countries)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockCountriesMockRecorder) Create(countries interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockCountries)(nil).Create), countries)
+}
+
+// GetAll mocks base method.
+func (m *MockCountries) GetAll() ([]Country, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAll")
+	ret0, _ := ret[0].([]Country)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAll indicates an expected call of GetAll.
+func (mr *MockCountriesMockRecorder) GetAll() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockCountries)(nil).GetAll))
+}
+
+// GetByCode mocks base method.
+func (m *MockCountries) GetByCode(countryCode string) (*Country, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetByCode", countryCode)
+	ret0, _ := ret[0].(*Country)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByCode indicates an expected call of GetByCode.
+func (mr *MockCountriesMockRecorder) GetByCode(countryCode interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByCode", reflect.TypeOf((*MockCountries)(nil).GetByCode), countryCode)
+}
+
+// GetByID mocks base method.
+func (m *MockCountries) GetByID(id int) (*Country, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetByID", id)
+	ret0, _ := ret[0].(*Country)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByID indicates an expected call of GetByID.
+func (mr *MockCountriesMockRecorder) GetByID(id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockCountries)(nil).GetByID), id)
+}
+
+// GetByName mocks base method.
+func (m *MockCountries) GetByName(name string) (*Country, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetByName", name)
+	ret0, _ := ret[0].(*Country)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByName indicates an expected call of GetByName.
+func (mr *MockCountriesMockRecorder) GetByName(name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByName", reflect.TypeOf((*MockCountries)(nil).GetByName), name)
+}
