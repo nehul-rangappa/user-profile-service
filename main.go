@@ -35,7 +35,7 @@ func main() {
 		log.Fatal("Failed to establish a connection with database")
 	}
 
-	// Migrations can be used if needed but applying DDL is suggested for control on data types in schema
+	// Migrations can be used if needed but applying DDL from schema.sql is suggested for control on data types and attributes in schema
 	// db.AutoMigrate(&models.Country{})
 	// db.AutoMigrate(&models.User{})
 
