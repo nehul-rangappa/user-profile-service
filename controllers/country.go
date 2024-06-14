@@ -76,6 +76,8 @@ func (c *countryController) GetMetaCountries(ctx *gin.Context) {
 	}
 
 	// Go routine to handle creating country records in our database
+	// Note: It can be ideal to wait for processing these records in Database.
+	// But it depends on the use case, where the assumption here is not to worry about the DB records.
 	go c.countryStore.Create(countries)
 
 	ctx.JSON(http.StatusOK, metaCountries)
