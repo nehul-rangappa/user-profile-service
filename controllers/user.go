@@ -3,9 +3,9 @@ package controllers
 import (
 	"errors"
 	"net/http"
+	"os"
 	"regexp"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -53,54 +53,19 @@ func validate(user *models.User) error {
 // with an expiration period of 12 hours and
 // returns the token along with any error
 func createJWTToken(userID int) (string, error) {
+	secretKey := os.Getenv("SECRET_KEY")
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"id":     userID,
 			"expiry": time.Now().Add(time.Hour * 12).Unix(), // Keeping an expiration period of 12 hours
 		})
 
-	jwtToken, err := token.SignedString([]byte("gigawrks-secret-go-key"))
+	jwtToken, err := token.SignedString([]byte(secretKey))
 	if err != nil {
 		return "", err
 	}
 
 	return jwtToken, nil
-}
-
-// verifyJWTToken takes a token and user ID
-// validates the authenticity of the token followed by
-// its validity based on expiration time and
-// returns an error in case of any encountered issues
-func verifyJWTToken(jwtToken string, id int) error {
-	token, err := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
-		return []byte("gigawrks-secret-go-key"), nil
-	})
-	if err != nil {
-		return err
-	}
-
-	if !token.Valid {
-		return errors.New("invalid jwt token")
-	}
-
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
-		return errors.New("invalid jwt token")
-	}
-
-	if jwtID, ok := claims["id"].(float64); ok {
-		if jwtID != float64(id) {
-			return errors.New("no authorization to this entity")
-		}
-	}
-
-	if expiry, ok := claims["expiry"].(float64); ok {
-		if expiry < float64(time.Now().Unix()) {
-			return errors.New("jwt token is expired")
-		}
-	}
-
-	return nil
 }
 
 // Signup method takes a gin context, validates the request body
@@ -178,55 +143,12 @@ func (u *userController) Login(ctx *gin.Context) {
 	return
 }
 
-// authorizeUser function takes in a gin context
-// validates the path parameter, authorizes the user
-// based on JWT token and verifies the ownership
-// returns an ID if no error, else it
-// writes the response and returns the error
-func authorizeUser(ctx *gin.Context) (int, error) {
-	userID := ctx.Param("id")
-	if userID == "" {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": errMissingPathParam.Error()})
-		return 0, errMissingPathParam
-	}
-
-	id, err := strconv.Atoi(userID)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": errInvalidPathParam.Error()})
-		return 0, errInvalidPathParam
-	}
-
-	authHeaders := ctx.Request.Header["Authorization"]
-
-	if len(authHeaders) == 0 {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": errors.New("missing Authorization Headers").Error()})
-		return 0, errors.New("missing Authorization Headers")
-	}
-
-	authToken := strings.Split(authHeaders[0], " ")
-	if len(authToken) != 2 {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": errors.New("invalid Authorization Headers").Error()})
-		return 0, errors.New("invalid Authorization Headers")
-	}
-
-	jwtToken := authToken[1]
-
-	if err := verifyJWTToken(jwtToken, id); err != nil {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return 0, err
-	}
-
-	return id, nil
-}
-
 // Get method takes a gin context, validates the path parameter
 // authorizes the user based on JWT headers, interacts with the model
 // to fetch user information and writes back to the API response
 func (u *userController) Get(ctx *gin.Context) {
-	id, err := authorizeUser(ctx)
-	if err != nil {
-		return
-	}
+	// Ignoring error as this is already validated in middleware
+	id, _ := strconv.Atoi(ctx.Param("id"))
 
 	userData, err := u.userStore.GetByID(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -249,10 +171,8 @@ func (u *userController) Get(ctx *gin.Context) {
 func (u *userController) Update(ctx *gin.Context) {
 	var user models.User
 
-	id, err := authorizeUser(ctx)
-	if err != nil {
-		return
-	}
+	// Ignoring error as this is already validated in middleware
+	id, _ := strconv.Atoi(ctx.Param("id"))
 
 	if err := ctx.ShouldBindBodyWithJSON(&user); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": errPayload.Error()})
@@ -290,10 +210,8 @@ func (u *userController) Update(ctx *gin.Context) {
 // authorizes the user based on JWT headers, interacts with the model
 // to delete the user information and writes back to the API response
 func (u *userController) Delete(ctx *gin.Context) {
-	id, err := authorizeUser(ctx)
-	if err != nil {
-		return
-	}
+	// Ignoring error as this is already validated in middleware
+	id, _ := strconv.Atoi(ctx.Param("id"))
 
 	if err := u.userStore.Delete(id); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

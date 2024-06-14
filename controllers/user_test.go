@@ -181,13 +181,6 @@ func Test_userController_Get(t *testing.T) {
 			wantCode: http.StatusOK,
 		},
 		{
-			name:      "Failure case due to path parameter",
-			userID:    1,
-			pathParam: "a",
-			expMock:   func() {},
-			wantCode:  http.StatusBadRequest,
-		},
-		{
 			name:      "Failure case due to model",
 			userID:    1,
 			pathParam: "1",
@@ -219,8 +212,6 @@ func Test_userController_Get(t *testing.T) {
 			}
 			ctx.Request.Method = "GET"
 
-			jwtToken, _ := createJWTToken(tt.userID)
-			ctx.Request.Header.Set("Authorization", "Bearer "+jwtToken)
 			ctx.Params = []gin.Param{{Key: "id", Value: tt.pathParam}}
 
 			uH := NewUserController(userModel)
@@ -268,20 +259,6 @@ func Test_userController_Update(t *testing.T) {
 		// 	},
 		// 	wantCode: http.StatusOK,
 		// },
-		{
-			name:      "Failure case due to path parameter",
-			userID:    1,
-			pathParam: "a",
-			expMock:   func() {},
-			reqBody: models.User{
-				ID:        1,
-				Name:      "Test User",
-				CountryID: 1,
-				Email:     "test@gmail.com",
-				Password:  "xasf2415g46",
-			},
-			wantCode: http.StatusBadRequest,
-		},
 		{
 			name:      "Failure case due to request body",
 			userID:    1,
@@ -332,9 +309,6 @@ func Test_userController_Update(t *testing.T) {
 			}
 			ctx.Request.Method = "PUT"
 
-			jwtToken, _ := createJWTToken(tt.userID)
-
-			ctx.Request.Header.Set("Authorization", "Bearer "+jwtToken)
 			ctx.Params = []gin.Param{{Key: "id", Value: tt.pathParam}}
 
 			jsonbytes, _ := json.Marshal(tt.reqBody)
@@ -372,13 +346,6 @@ func Test_userController_Delete(t *testing.T) {
 			wantCode: http.StatusNoContent,
 		},
 		{
-			name:      "Failure case due to path parameter",
-			userID:    1,
-			pathParam: "a",
-			expMock:   func() {},
-			wantCode:  http.StatusBadRequest,
-		},
-		{
 			name:      "Failure case due to model",
 			userID:    1,
 			pathParam: "1",
@@ -401,8 +368,6 @@ func Test_userController_Delete(t *testing.T) {
 			}
 			ctx.Request.Method = "DELETE"
 
-			jwtToken, _ := createJWTToken(tt.userID)
-			ctx.Request.Header.Set("Authorization", "Bearer "+jwtToken)
 			ctx.Params = []gin.Param{{Key: "id", Value: tt.pathParam}}
 
 			uH := NewUserController(userModel)
