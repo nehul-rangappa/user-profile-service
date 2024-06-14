@@ -1,0 +1,56 @@
+{
+	"info": {
+		"_postman_id": "2bcbd3e3-0a75-4d11-a0b6-02bdce54bdcb",
+		"name": "Rest Countries",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25935748"
+	},
+	"item": [
+		{
+			"name": "Get meta countries",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/rest-countries",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"rest-countries"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "localhost:8000",
+			"type": "string"
+		}
+	]
+}
