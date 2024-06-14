@@ -11,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 	"github.com/nehul-rangappa/gigawrks-user-service/models"
+	"gorm.io/gorm"
 )
 
 // Test_countryController_GetCountries runs unit tests on the method GetCountries
@@ -84,6 +85,14 @@ func Test_countryController_GetCountries(t *testing.T) {
 			wantCode: http.StatusInternalServerError,
 		},
 		{
+			name:       "Failure case due for Get By Name",
+			commonName: "United States",
+			expMock: func() {
+				countryModel.EXPECT().GetByName("United States").Return(nil, gorm.ErrRecordNotFound)
+			},
+			wantCode: http.StatusNotFound,
+		},
+		{
 			name: "Success case for Get By Code",
 			code: "US",
 			expMock: func() {
@@ -108,6 +117,14 @@ func Test_countryController_GetCountries(t *testing.T) {
 			wantCode: http.StatusInternalServerError,
 		},
 		{
+			name: "Failure case due for Get By Code",
+			code: "US",
+			expMock: func() {
+				countryModel.EXPECT().GetByCode("US").Return(nil, gorm.ErrRecordNotFound)
+			},
+			wantCode: http.StatusNotFound,
+		},
+		{
 			name: "Success case for Get By ID",
 			id:   "1",
 			expMock: func() {
@@ -130,6 +147,14 @@ func Test_countryController_GetCountries(t *testing.T) {
 				countryModel.EXPECT().GetByID(1).Return(nil, sql.ErrNoRows)
 			},
 			wantCode: http.StatusInternalServerError,
+		},
+		{
+			name: "Failure case due for Get By ID",
+			id:   "1",
+			expMock: func() {
+				countryModel.EXPECT().GetByID(1).Return(nil, gorm.ErrRecordNotFound)
+			},
+			wantCode: http.StatusNotFound,
 		},
 		{
 			name:     "Failure case due to wrong ID param",

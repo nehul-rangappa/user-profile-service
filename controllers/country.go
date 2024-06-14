@@ -2,12 +2,15 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/nehul-rangappa/gigawrks-user-service/models"
+	"gorm.io/gorm"
 )
 
 // MetaCountry resource consisting of all the meta data attributes defining a country
@@ -38,7 +41,9 @@ func NewCountryController(c models.Countries) *countryController {
 func (c *countryController) GetMetaCountries(ctx *gin.Context) {
 	metaCountries := make([]MetaCountry, 0)
 
-	response, err := http.Get("https://restcountries.com/v3.1/all")
+	// Getting the HOST of rest countries from environment variable
+	restCountiesHost := os.Getenv("REST_COUNTRIES_HOST")
+	response, err := http.Get(restCountiesHost + "/v3.1/all")
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -52,6 +57,7 @@ func (c *countryController) GetMetaCountries(ctx *gin.Context) {
 		return
 	}
 
+	// We are only using limited country information available from the external data
 	if err1 := json.Unmarshal(countryData, &metaCountries); err1 != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err1.Error()})
 		return
@@ -74,10 +80,11 @@ func (c *countryController) GetMetaCountries(ctx *gin.Context) {
 	}
 
 	// Go routine to handle creating country records in our database
+	// Note: It can be ideal to wait for processing these records in Database.
+	// But it depends on the use case, where the assumption here is not to worry about the DB records.
 	go c.countryStore.Create(countries)
 
 	ctx.JSON(http.StatusOK, metaCountries)
-	return
 }
 
 // GetCountries method takes a gin context
@@ -90,7 +97,10 @@ func (c *countryController) GetCountries(ctx *gin.Context) {
 	countryCode := ctx.Query("code")
 	if countryCode != "" {
 		result, err := c.countryStore.GetByCode(countryCode)
-		if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		} else if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
@@ -104,7 +114,10 @@ func (c *countryController) GetCountries(ctx *gin.Context) {
 	name := ctx.Query("name")
 	if name != "" {
 		result, err := c.countryStore.GetByName(name)
-		if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		} else if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
@@ -130,12 +143,15 @@ func (c *countryController) GetCountries(ctx *gin.Context) {
 
 	cID, err := strconv.Atoi(id)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": errInvalidPathParam.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": ErrInvalidPathParam.Error()})
 		return
 	}
 
 	result, err := c.countryStore.GetByID(cID)
-	if err != nil {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	} else if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -143,5 +159,4 @@ func (c *countryController) GetCountries(ctx *gin.Context) {
 	countries = append(countries, *result)
 
 	ctx.JSON(http.StatusOK, countries)
-	return
 }

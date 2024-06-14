@@ -6,10 +6,10 @@ import (
 
 // Country resource consisting of all the attributes defining a country
 type Country struct {
-	ID           int    `json:"id" gorm:"primary_key"`
-	CommonName   string `json:"commonName"`
+	ID           int    `json:"id" gorm:"primaryKey, autoIncrement, not null"`
+	CommonName   string `json:"commonName" gorm:"not null"`
 	OfficialName string `json:"officialName"`
-	CountryCode  string `json:"countryCode" gorm:"unique"`
+	CountryCode  string `json:"countryCode" gorm:"unique, not null"`
 	Capital      string `json:"capital"`
 	Region       string `json:"region"`
 	SubRegion    string `json:"subregion"`
