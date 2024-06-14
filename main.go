@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/nehul-rangappa/gigawrks-user-service/controllers"
+	"github.com/nehul-rangappa/gigawrks-user-service/middleware"
 	"github.com/nehul-rangappa/gigawrks-user-service/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -49,9 +50,11 @@ func main() {
 	// User APIs
 	app.POST("/signup", userController.Signup)
 	app.POST("/login", userController.Login)
-	app.GET("/users/:id", userController.Get)
-	app.PUT("/users/:id", userController.Update)
-	app.DELETE("/users/:id", userController.Delete)
+
+	// Protected User APIs
+	app.GET("/users/:id", middleware.Auth(), userController.Get)
+	app.PUT("/users/:id", middleware.Auth(), userController.Update)
+	app.DELETE("/users/:id", middleware.Auth(), userController.Delete)
 
 	// Rest Country API
 	app.GET("/rest-countries", countryController.GetMetaCountries)
