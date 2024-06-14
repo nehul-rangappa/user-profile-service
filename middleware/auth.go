@@ -90,6 +90,7 @@ func Auth() gin.HandlerFunc {
 			return
 		}
 
+		// Forwarding the request to API handler
 		ctx.Next()
 	}
 }
