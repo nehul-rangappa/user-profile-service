@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -40,7 +41,9 @@ func NewCountryController(c models.Countries) *countryController {
 func (c *countryController) GetMetaCountries(ctx *gin.Context) {
 	metaCountries := make([]MetaCountry, 0)
 
-	response, err := http.Get("https://restcountries.com/v3.1/all")
+	// Getting the HOST of rest countries from environment variable
+	restCountiesHost := os.Getenv("REST_COUNTRIES_HOST")
+	response, err := http.Get(restCountiesHost + "/v3.1/all")
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -54,6 +57,7 @@ func (c *countryController) GetMetaCountries(ctx *gin.Context) {
 		return
 	}
 
+	// We are only using limited country information available from the external data
 	if err1 := json.Unmarshal(countryData, &metaCountries); err1 != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err1.Error()})
 		return
