@@ -14,6 +14,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 	"github.com/nehul-rangappa/gigawrks-user-service/models"
+	"gorm.io/gorm"
 )
 
 func Test_userController_Signup(t *testing.T) {
@@ -194,6 +195,15 @@ func Test_userController_Get(t *testing.T) {
 				userModel.EXPECT().GetByID(1).Return(nil, sql.ErrNoRows)
 			},
 			wantCode: http.StatusInternalServerError,
+		},
+		{
+			name:      "Failure case due to no content found",
+			userID:    1,
+			pathParam: "1",
+			expMock: func() {
+				userModel.EXPECT().GetByID(1).Return(nil, gorm.ErrRecordNotFound)
+			},
+			wantCode: http.StatusNotFound,
 		},
 	}
 	for _, tt := range tests {

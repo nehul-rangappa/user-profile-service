@@ -12,6 +12,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/nehul-rangappa/gigawrks-user-service/models"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 type userController struct {
@@ -173,7 +174,7 @@ func (u *userController) Login(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"jwtToken": jwtToken})
+	ctx.JSON(http.StatusOK, gin.H{"id": userData.ID, "jwtToken": jwtToken})
 	return
 }
 
@@ -228,7 +229,10 @@ func (u *userController) Get(ctx *gin.Context) {
 	}
 
 	userData, err := u.userStore.GetByID(id)
-	if err != nil {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	} else if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

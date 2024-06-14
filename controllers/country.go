@@ -2,12 +2,14 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/nehul-rangappa/gigawrks-user-service/models"
+	"gorm.io/gorm"
 )
 
 // MetaCountry resource consisting of all the meta data attributes defining a country
@@ -90,7 +92,10 @@ func (c *countryController) GetCountries(ctx *gin.Context) {
 	countryCode := ctx.Query("code")
 	if countryCode != "" {
 		result, err := c.countryStore.GetByCode(countryCode)
-		if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		} else if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
@@ -104,7 +109,10 @@ func (c *countryController) GetCountries(ctx *gin.Context) {
 	name := ctx.Query("name")
 	if name != "" {
 		result, err := c.countryStore.GetByName(name)
-		if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		} else if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
@@ -135,7 +143,10 @@ func (c *countryController) GetCountries(ctx *gin.Context) {
 	}
 
 	result, err := c.countryStore.GetByID(cID)
-	if err != nil {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	} else if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
