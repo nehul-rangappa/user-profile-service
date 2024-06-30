@@ -1,2 +1,2 @@
-# gigawrks-user-service
-Building a user service for Gigawrks
+# user-profile-service
+Building a user profile service
