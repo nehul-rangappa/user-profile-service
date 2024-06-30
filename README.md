@@ -1,4 +1,4 @@
-# gigawrks-user-service
+# user-profile-service
 
 This backend service is designed for user profile management supporting a large diversity spread across wide range of countries.
 
